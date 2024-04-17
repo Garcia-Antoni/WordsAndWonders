@@ -1,0 +1,7 @@
+# Ignores "node_modules" from "back-end" and "front-end" folders
+front-end/node_modules
+back-end/node_modules
+
+# Ignores "package-lock.json" files
+front-end/package-lock.json
+back-end/package-lock.json
