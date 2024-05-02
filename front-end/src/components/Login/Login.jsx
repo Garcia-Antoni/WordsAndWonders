@@ -1,12 +1,27 @@
 import { useState } from "react";
+import axios from "axios";
 
 import ownStyle from "./Login.module.css";
 
 const Login = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    // Creating a "click event" to change the background
     const [isRegisterMode, setRegisterMode] = useState(false);
 
     const handleModeOn = () => { setRegisterMode(true); };
     const handleModeOff = () => { setRegisterMode(false); };
+
+    // Communicating this "component" with the "user_accounts" route.
+    const [userCredentials, setUserCredentials] = useState({ e_mail: "", user_password: "" });
+
+    const handleSignIn = (event) => {
+        event.preventDefault();
+
+        axios.post(`${API_URL}` + "/auth/user_accounts", userCredentials)
+            .then(result =>  console.log(result))
+            .catch(exception => console.log("Error fetching and parsing data", exception));
+    };
 
     return (
         <>
@@ -17,18 +32,18 @@ const Login = () => {
                     {/** inside-container */}
                     <div className={`${ownStyle["inside-container"]}`}>
                         {/** sign-in-form */}
-                        <form className={`${ownStyle["sign-in-form"]}`}>
+                        <form onSubmit={handleSignIn} autoComplete="off" className={`${ownStyle["sign-in-form"]}`}>
                             <h3 style={{ color: "rgb(0, 74, 77)" }} className="fw-bold mb-4">Inicio de sesión</h3>
 
                             {/** form-floating */}
                             <div className="form-floating w-100 mb-2">
-                                <input type="email" id="sign-in.e-mail" placeholder="name@example.com" className="form-control" />
+                                <input type="email" onChange={(event) => setUserCredentials({ ...userCredentials, e_mail: event.target.value })} id="sign-in.e-mail" placeholder="name@example.com" className="form-control" />
                                 <label htmlFor="sign-in.e-mail">Correo electrónico</label>
                             </div>
 
                             {/** form-floating */}
                             <div className="form-floating w-100 mb-4">
-                                <input type="password" id="sign-in.user-password" placeholder="Password" className="form-control" />
+                                <input type="password" onChange={(event) => setUserCredentials({ ...userCredentials, user_password: event.target.value })} id="sign-in.user-password" placeholder="Password" className="form-control" />
                                 <label htmlFor="sign-in.user-password">Contraseña del usuario</label>
                             </div>
 
@@ -45,7 +60,7 @@ const Login = () => {
                         </form>
 
                         {/** sign-up-form */}
-                        <form className={`${ownStyle["sign-up-form"]}`}>
+                        <form autoComplete="off" className={`${ownStyle["sign-up-form"]}`}>
                             <h3 style={{ color: "rgb(0, 74, 77)" }} className="fw-bold mb-5">Nuevo usuario</h3>
 
                             {/** form-floating */}
